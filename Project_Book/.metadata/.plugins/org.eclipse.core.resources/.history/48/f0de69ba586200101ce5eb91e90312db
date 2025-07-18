@@ -1,0 +1,80 @@
+package com.rays.ctl;
+
+import java.util.List;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import com.rays.common.ORSResponse;
+import com.rays.dto.BookDTO;
+import com.rays.form.BookForm;
+import com.rays.service.BookService;
+
+@RestController
+@RequestMapping(value = "Book")
+public class BookCtl  {
+
+    @Autowired
+    private BookService bookService;
+
+    @PostMapping("save")
+    public ORSResponse save(@RequestBody @Valid BookForm form, BindingResult bindingResult) {
+
+        ORSResponse res = validate(bindingResult);
+
+        if (!res.isSuccess()) {
+            return res;
+        }
+
+        BookDTO dto = form.getDto();
+
+        if (dto.getId() > 0) {
+            bookService.update(dto);
+            res.addData(dto.getId());
+            res.addMessage("Book updated successfully!");
+        } else {
+            long pk = bookService.add(dto);
+            res.addData(pk);
+            res.addMessage("Book added successfully!");
+        }
+
+        return res;
+    }
+
+    @GetMapping("get/{id}")
+    public ORSResponse get(@PathVariable long id) {
+        ORSResponse res = new ORSResponse();
+        BookDTO dto = bookService.findById(id);
+        res.addData(dto);
+        return res;
+    }
+
+    @GetMapping("delete/{ids}")
+    public ORSResponse delete(@PathVariable long[] ids) {
+        ORSResponse res = new ORSResponse();
+        for (long id : ids) {
+            bookService.delete(id);
+        }
+        res.addMessage("Book(s) deleted successfully!");
+        return res;
+    }
+
+    @PostMapping("search/{pageNo}")
+    public ORSResponse search(@RequestBody BookForm form, @PathVariable int pageNo) {
+        ORSResponse res = new ORSResponse();
+        BookDTO dto = form.getDto();
+
+        List<BookDTO> list = bookService.search(dto, pageNo, 5);
+
+        if (list.isEmpty()) {
+            res.addMessage("No books found.");
+        } else {
+            res.addData(list);
+        }
+
+        return res;
+    }
+}
