@@ -1,0 +1,64 @@
+
+
+
+<!-- Heading based on ID -->
+<div *ngIf="form.id > 0">
+  <h1>Update Book</h1>
+</div>
+<div *ngIf="form.id == null">
+  <h1>Add Book</h1>
+</div>
+
+<!-- Message -->
+<p style="color: green;">{{ form.message }}</p>
+
+<!-- Book Form -->
+<table>
+  <tr>
+    <th>Title</th>
+    <td><input type="text" [(ngModel)]="form.title" /></td>
+  </tr>
+
+  <tr>
+    <th>Author</th>
+    <td><input type="text" [(ngModel)]="form.author" /></td>
+  </tr>
+
+  <tr>
+    <th>Price</th>
+    <td><input type="number" [(ngModel)]="form.price" /></td>
+  </tr>
+
+  <tr>
+    <th>Publisher</th>
+    <td><input type="text" [(ngModel)]="form.publisher" /></td>
+  </tr>
+
+  <tr>
+    <th>Cover Preview:</th>
+    <td>
+      <img
+        *ngIf="form.id"
+        [src]="'http://localhost:8081/Book/cover/' + form.id"
+        height="80px"
+        width="60px"
+        alt="No Cover"
+      />
+    </td>
+  </tr>
+
+  <tr>
+    <th>Upload Cover:</th>
+    <td>
+      <input type="file" (change)="onFileSelect($event)" accept="image/*" />
+    </td>
+  </tr>
+
+  <tr>
+    <td></td>
+    <td>
+      <button (click)="save()" *ngIf="form.id == null">Add</button>
+      <button (click)="save()" *ngIf="form.id > 0">Update</button>
+    </td>
+  </tr>
+</table>

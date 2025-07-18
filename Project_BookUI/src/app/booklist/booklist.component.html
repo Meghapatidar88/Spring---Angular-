@@ -1,0 +1,62 @@
+
+<hr>
+<h2>Book List</h2>
+<p style="color: green;">{{ form.message }}</p>
+
+<!-- Search Section -->
+<div>
+  <input type="text" placeholder="Enter Title" [(ngModel)]="form.search.title" />
+  &nbsp;
+  <input type="text" placeholder="Enter Author" [(ngModel)]="form.search.author" />
+  &nbsp;
+  <button (click)="search()">Search</button>
+  &nbsp;
+  <button (click)="delete()">Delete</button>
+</div>
+
+<br>
+
+<!-- Book Table -->
+<table border="1">
+  <tr>
+    <th>Select</th>
+    <th>Cover</th>
+    <th>ID</th>
+    <th>Title</th>
+    <th>Author</th>
+    <th>Price</th>
+    <th>Publisher</th>
+    <th>Edit</th>
+  </tr>
+
+  <tr *ngFor="let b of form.list; let i = index">
+    <td><input type="checkbox" (change)="onCheckboxChange(b.id)" /></td>
+    <td>
+      <img
+        src="http://localhost:8081/Book/cover/{{ b.id }}"
+        height="55px"
+        width="60px"
+        alt="No Cover"
+      />
+    </td>
+    <td>{{ (form.pageNo * 5) + i + 1 }}</td>
+    <td>{{ b.title }}</td>
+    <td>{{ b.author }}</td>
+    <td>{{ b.price }}</td>
+    <td>{{ b.publisher }}</td>
+    <td><a (click)="edit(b.id)" style="color: blue;">Edit</a></td>
+  </tr>
+
+  <tr>
+    <td colspan="8">
+      <button [disabled]="form.pageNo == 0" (click)="previous()">Previous</button>
+      </td>
+     
+      &nbsp;
+      <td style="text-align: right;">
+  <button [disabled]="form.list.length < 5" (click)="next()">Next</button>
+</td>
+
+    
+  </tr>
+</table>
